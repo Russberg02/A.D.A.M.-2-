@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import math as m
+import matplotlib.pyplot as plt
 
 # HEADER
 st.header("Advanced corrodeD pipe structurAl integrity systeM (ADAM)")
@@ -121,7 +122,7 @@ if UTS > 1 and Sy > 1 and Se > 0 and sigma_m >= 0 and sigma_a >= 0:
     morrow_line = Se * (1 - sigma_m_range / UTS)
 
     # Prepare figure
-    fig, ax = subplots(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(8, 6))
 
     # Fill regions
     ax.fill_between(sigma_m_range, 0, goodman_line, color='green', alpha=0.1, label='Safe (Goodman)')
