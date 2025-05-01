@@ -108,8 +108,6 @@ Gerber_Safe = Gerber_Value <= 1
 Morrow_sigma_a_allow = Se * (1 - (sigma_m / UTS))
 Morrow_Safe = sigma_a <= Morrow_sigma_a_allow
 
-import matplotlib.pyplot as plt
-
 # Define range for sigma_m
 sigma_m_range = np.linspace(0, UTS, 500)
 
