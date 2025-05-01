@@ -117,9 +117,6 @@ soderberg_line = Se * (1 - sigma_m_range / Sy)
 gerber_line = Se * (1 - (sigma_m_range / UTS) ** 2)
 morrow_line = Se * (1 - sigma_m_range / UTS)
 
-# Prepare figure
-fig, ax = plt.subplots(figsize=(8, 6))
-
 # Fill regions
 ax.fill_between(sigma_m_range, 0, goodman_line, color='green', alpha=0.1, label='Safe (Goodman)')
 ax.fill_between(sigma_m_range, goodman_line, Se, color='red', alpha=0.1, label='Unsafe (Goodman)')
