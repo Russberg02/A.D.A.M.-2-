@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 from pickle import load
@@ -8,6 +7,7 @@ import math as m
 from PIL import Image
 import os
 from glob import glob
+
 
 # HEADER
 st.header("Advanced corrodeD pipe structurAl integrity systeM (ADAM)")
@@ -58,7 +58,8 @@ st.subheader('User Input Summary')
 st.write(df.style.format("{:.2f}"))
 
 # Von Mises Stresses for Fatigue
-P1max, P2max, P1min, P2min = Pop_Max*D/(2*t), Pop_Max*D/(4*t), Pop_Min*D/(2*t), Pop_Min*D/(4*t)
+P1max, P2max = Pop_Max*D/(2*t), Pop_Max*D/(4*t)
+P1min, P2min = Pop_Min*D/(2*t), Pop_Min*D/(4*t)
 P3max = P3min = 0
 
 Svm_max = (1/m.sqrt(2))*((P1max-P2max)**2+(P2max-P3max)**2+(P3max-P1max)**2)**0.5
@@ -73,25 +74,28 @@ Soderberg = (sigma_a/Se) + (sigma_m/Sy)
 Gerber = (sigma_a/Se) + ((sigma_m/UTS)**2)
 Morrow_allow = Se*(1 - sigma_m/UTS)
 
-# Display Results
+# Display Burst Pressure Predictions
 st.subheader('Burst Pressure Predictions')
 burst_df = pd.DataFrame({
     'Model': ['Von Mises', 'Tresca', 'ASME B31G', 'DnV', 'PCORRC'],
     'Burst Pressure [MPa]': [Pvm, PTresca, P_ASME_B31G, P_DnV, P_PCORRC]
 })
 st.write(burst_df)
-
 st.bar_chart(burst_df.set_index('Model'))
 
+# Fatigue Assessment Table
 st.subheader('Fatigue Assessment')
 fatigue_df = pd.DataFrame({
     'σa [MPa]': [sigma_a], 'σm [MPa]': [sigma_m], 'Se [MPa]': [Se],
-    'Goodman': [Goodman], 'Safe (Goodman)': ["Yes" if Goodman <= 1 else "No"],
-    'Soderberg': [Soderberg], 'Safe (Soderberg)': ["Yes" if Soderberg <= 1 else "No"],
-    'Gerber': [Gerber], 'Safe (Gerber)': ["Yes" if Gerber <= 1 else "No"],
-    'Morrow Allowable σa [MPa]': [Morrow_allow], 'Safe (Morrow)': ["Yes" if sigma_a <= Morrow_allow else "No"]
+    'Goodman': [Goodman], 'Safe (Goodman)': ["Safe" if Goodman <= 1 else "Not Safe"],
+    'Soderberg': [Soderberg], 'Safe (Soderberg)': ["Safe" if Soderberg <= 1 else "Not Safe"],
+    'Gerber': [Gerber], 'Safe (Gerber)': ["Safe" if Gerber <= 1 else "Not Safe"],
+    'Morrow Allowable σa [MPa]': [Morrow_allow], 'Safe (Morrow)': ["Safe" if sigma_a <= Morrow_allow else "Not Safe"]
 })
-st.write(fatigue_df.style.format("{:.2f}"))
+
+# Apply formatting only to numeric columns
+numeric_cols = fatigue_df.select_dtypes(include=[np.number]).columns
+st.write(fatigue_df.style.format({col: "{:.2f}" for col in numeric_cols}))
 
 # Bar Chart for Stress Comparison
 stress_df = pd.DataFrame({
@@ -103,11 +107,10 @@ st.bar_chart(stress_df.set_index("Stress Type"))
 
 # Goodman Diagram
 st.subheader("Goodman Diagram")
-
 fig, ax = plt.subplots()
 ax.plot([0, UTS], [Se, 0], label='Goodman Line', color='r')
 ax.plot([0, Sy], [Se, 0], label='Soderberg Line', color='g')
-ax.plot([0, UTS], [Se, Se*(1 - (UTS/UTS)**2)], label='Gerber Curve', color='b')
+ax.plot([0, UTS], [Se, 0], label='Gerber Curve (approx)', color='b', linestyle='--')
 ax.plot(sigma_m, sigma_a, 'ko', label='Operating Point')
 ax.set_xlabel("Mean Stress σm [MPa]")
 ax.set_ylabel("Alternating Stress σa [MPa]")
@@ -124,3 +127,4 @@ st.markdown('[Case Study](https://drive.google.com/file/d/1Ako5uVRPYL5k5JeEQ_Xhl
 st.markdown('[Corroded Pipe Burst Data](https://docs.google.com/spreadsheets/d/1YJ7ziuc_IhU7-MMZOnRmh4h21_gf6h5Z/edit#gid=56754844)', unsafe_allow_html=True)
 st.markdown('[Pre-Test](https://forms.gle/wPvcgnZAC57MkCxN8)', unsafe_allow_html=True)
 st.markdown('[Post-Test](https://forms.gle/FdiKqpMLzw9ENscA9)', unsafe_allow_html=True)
+
