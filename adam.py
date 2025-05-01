@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import math as m
-import matplotlib.pyplot as plt
 
 # HEADER
 st.header("Advanced corrodeD pipe structurAl integrity systeM (ADAM)")
