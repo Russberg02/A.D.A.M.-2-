@@ -108,6 +108,49 @@ Gerber_Safe = Gerber_Value <= 1
 Morrow_sigma_a_allow = Se * (1 - (sigma_m / UTS))
 Morrow_Safe = sigma_a <= Morrow_sigma_a_allow
 
+import matplotlib.pyplot as plt
+
+# Define range for sigma_m
+sigma_m_range = np.linspace(0, UTS, 500)
+
+# Define criteria lines
+goodman_line = Se * (1 - sigma_m_range / UTS)
+soderberg_line = Se * (1 - sigma_m_range / Sy)
+gerber_line = Se * (1 - (sigma_m_range / UTS) ** 2)
+morrow_line = Se * (1 - sigma_m_range / UTS)
+
+# Prepare figure
+fig, ax = plt.subplots(figsize=(8, 6))
+
+# Fill regions
+ax.fill_between(sigma_m_range, 0, goodman_line, color='green', alpha=0.1, label='Safe (Goodman)')
+ax.fill_between(sigma_m_range, goodman_line, Se, color='red', alpha=0.1, label='Unsafe (Goodman)')
+
+# Plot lines
+ax.plot(sigma_m_range, goodman_line, label='Goodman', color='green')
+ax.plot(sigma_m_range, soderberg_line, label='Soderberg', color='blue')
+ax.plot(sigma_m_range, gerber_line, label='Gerber', color='orange')
+ax.plot(sigma_m_range, morrow_line, label='Morrow', color='purple', linestyle='--')
+
+# Mark operating point
+ax.plot(sigma_m, sigma_a, 'ro', label='Operating Point')
+ax.annotate('Operating Point', (sigma_m, sigma_a), textcoords="offset points", xytext=(10,10), ha='center')
+
+# Labels and legend
+ax.set_title('Fatigue Failure Criteria')
+ax.set_xlabel('Mean Stress σm (MPa)')
+ax.set_ylabel('Alternating Stress σa (MPa)')
+ax.legend()
+ax.grid(True)
+
+# Set plot limits
+ax.set_xlim([0, UTS])
+ax.set_ylim([0, Se * 1.2])
+
+# Display in Streamlit
+st.subheader("Fatigue Failure Criteria Graph")
+st.pyplot(fig)
+
 # Output
 st.subheader('Fatigue Failure Assessment (Goodman, Soderberg, Gerber, Morrow)')
 st.write(pd.DataFrame({
