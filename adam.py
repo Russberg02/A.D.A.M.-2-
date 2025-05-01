@@ -57,7 +57,7 @@ else:
 
 # DnV
 Q = m.sqrt(1 + 0.31 * (Lc ** 2) / (D * t))
-P_DnV = ((2 * UTS * t / (D - t)) * ((1 - (Dc / t)) / (1 - (Dc / (t * Q))))))
+P_DnV = ((2 * UTS * t / (D - t)) * ((1 - (Dc / t)) / (1 - (Dc / (t * Q)))))
 
 # PCORRC
 P_PCORRC = (2 * t * UTS / D) * (1 - Dc / t)
