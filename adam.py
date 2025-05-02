@@ -65,7 +65,7 @@ PTresca = 2*t*UTS/(D)
 M = m.sqrt(1+0.8*(L/(m.sqrt(D*t)))) #Folias factor
 
 if L < m.sqrt(20*D*t):
-    P_ASME_B31G = (2 * t * UTS / D) * ((1 - (2/3) * (Dc / t)) / (1 - ((2/3) * (Dc / t) / M)))
+    P_ASME_B31G = (2*t*UTS/D)*(1-(2/3)*(Dc/t)/1-(2/3)*(Dc/t)/M)
 
 elif L > m.sqrt(20*D*t):
     P_ASME_B31G = (2*t*UTS/D)*(1-(Dc/t))
