@@ -214,6 +214,43 @@ Stresses = [Sigma_VM_Pipe_Max_Operating_Pressure, Sigma_VM_Pipe_Min_Operating_Pr
 index = ["Svm_Max (MPa)", "Svm_Min (MPa)", "σa (MPa)", "σm (MPa)", "Se (MPa)", "Yield Stress (MPa)", "UTS (MPa)"]
 df = pd.DataFrame({"Stresses (MPa)": Stresses}, index=index)
 
+import matplotlib.pyplot as plt
+
+# Generate mean stress values for plotting
+sigma_m_range = np.linspace(0, UTS, 500)
+
+# Goodman Line: σa = Se * (1 - σm / UTS)
+goodman_line = Se * (1 - sigma_m_range / UTS)
+
+# Soderberg Line: σa = Se * (1 - σm / Sy)
+soderberg_line = Se * (1 - sigma_m_range / Sy)
+
+# Gerber Line: σa = Se * (1 - (σm / UTS)^2)
+gerber_line = Se * (1 - (sigma_m_range / UTS)**2)
+
+# Morrow Line: same as Goodman for current assumptions
+morrow_line = Se * (1 - sigma_m_range / UTS)
+
+# Plotting
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.plot(sigma_m_range, goodman_line, label='Goodman', color='red')
+ax.plot(sigma_m_range, soderberg_line, label='Soderberg', color='blue')
+ax.plot(sigma_m_range, gerber_line, label='Gerber', color='green')
+ax.plot(sigma_m_range, morrow_line, label='Morrow', color='orange', linestyle='--')
+
+# Plot operating point
+ax.plot(sigma_m, sigma_a, 'ko', label='Operating Point')
+
+# Styling
+ax.set_title('Fatigue Failure Criteria Curves')
+ax.set_xlabel('Mean Stress σm (MPa)')
+ax.set_ylabel('Alternating Stress σa (MPa)')
+ax.legend()
+ax.grid(True)
+
+st.subheader("Fatigue Failure Criteria Graph")
+st.pyplot(fig)
+
 #st.pyplot(df.plot.barh(color={"Stresses (MPa)": "red"}, stacked=True).figure)
 
 st.subheader('Reference')
