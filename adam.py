@@ -122,7 +122,7 @@ if UTS > 1 and Sy > 1 and Se > 0 and sigma_m >= 0 and sigma_a >= 0:
     })
 
     fig, ax = plt.subplots(figsize=(8, 6))
-    sns.lineplot(data=df_plot, x='UTS', y='Se', label='Goodman', ax=ax linestyle='--')
+    sns.lineplot(data=df_plot, x='UTS', y='Se', label='Goodman', ax=ax, linestyle='--')
 
     ax.plot(sigma_m, sigma_a, 'ro', label='Operating Point')
     ax.annotate('Operating Point', (sigma_m, sigma_a), textcoords="offset points", xytext=(10,10), ha='center')
