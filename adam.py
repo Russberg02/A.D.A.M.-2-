@@ -7,7 +7,7 @@ import math as m
 from PIL import Image
 import os
 from glob import glob
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 st.header("Advanced corrodeD pipe structurAl integrity systeM (ADAM)")
 
@@ -231,7 +231,7 @@ gerber_line = Se * (1 - (sigma_m_range / UTS)**2)
 morrow_line = Se * (1 - sigma_m_range / UTS)
 
 # Plotting
-fig, ax = pd.subplots(figsize=(10, 6))
+fig, ax = plt.subplots(figsize=(10, 6))
 ax.plot(sigma_m_range, goodman_line, label='Goodman', color='red')
 ax.plot(sigma_m_range, soderberg_line, label='Soderberg', color='blue')
 ax.plot(sigma_m_range, gerber_line, label='Gerber', color='green')
