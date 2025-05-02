@@ -214,7 +214,6 @@ Stresses = [Sigma_VM_Pipe_Max_Operating_Pressure, Sigma_VM_Pipe_Min_Operating_Pr
 index = ["Svm_Max (MPa)", "Svm_Min (MPa)", "σa (MPa)", "σm (MPa)", "Se (MPa)", "Yield Stress (MPa)", "UTS (MPa)"]
 df = pd.DataFrame({"Stresses (MPa)": Stresses}, index=index)
 
-import matplotlib.pyplot as plt
 
 # Generate mean stress values for plotting
 sigma_m_range = np.linspace(0, UTS, 500)
