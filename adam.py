@@ -7,7 +7,7 @@ import math as m
 from PIL import Image
 import os
 from glob import glob
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 st.header("Advanced corrodeD pipe structurAl integrity systeM (ADAM)")
 
@@ -213,36 +213,6 @@ st.write(calculated_param_df)
 Stresses = [Sigma_VM_Pipe_Max_Operating_Pressure, Sigma_VM_Pipe_Min_Operating_Pressure, sigma_a, sigma_m, Se, Sy, UTS]
 index = ["Svm_Max (MPa)", "Svm_Min (MPa)", "σa (MPa)", "σm (MPa)", "Se (MPa)", "Yield Stress (MPa)", "UTS (MPa)"]
 df = pd.DataFrame({"Stresses (MPa)": Stresses}, index=index)
-
-# Graph Layout for Fatigue Failure Criteria
-if UTS > 1 and Sy > 1 and Se > 0 and sigma_m >= 0 and sigma_a >= 0:
-    sigma_m_range = np.linspace(0, UTS, 500)
-    df_plot = pd.DataFrame({
-        'sigma_m': sigma_m_range,
-        'Goodman': Se * (1 - sigma_m_range / UTS),
-        'Soderberg': Se * (1 - sigma_m_range / Sy),
-
-    })
-
-    fig, ax = plt.subplots(figsize=(8, 6))
-
-    ax.plot(df_plot['sigma_m'], df_plot['Goodman'], label='Goodman', linestyle='--')
-    ax.plot(df_plot['sigma_m'], df_plot['Soderberg'], label='Soderberg', linestyle='-')
-
-
-    ax.plot(sigma_m, sigma_a, 'ro', label='Operating Point')
-    ax.annotate('Operating Point', (sigma_m, sigma_a), textcoords="offset points", xytext=(10,10), ha='center')
-
-    ax.set_title('Fatigue Failure Criteria')
-    ax.set_xlabel('Mean Stress σm (MPa)')
-    ax.set_ylabel('Alternating Stress σa (MPa)')
-    ax.grid(True)
-    ax.legend()
-    ax.set_xlim([0, max(UTS, 1)])
-    ax.set_ylim([0, max(Se * 1.2, 1)])
-    st.pyplot(fig)
-else:
-    st.warning("Fatigue plot not generated. Please enter valid material strengths and pressure values (e.g., UTS > 100 MPa, Sy > 50 MPa).")
 
 #st.pyplot(df.plot.barh(color={"Stresses (MPa)": "red"}, stacked=True).figure)
 
