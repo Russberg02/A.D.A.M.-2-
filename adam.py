@@ -7,7 +7,7 @@ import math as m
 from PIL import Image
 import os
 from glob import glob
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 st.header("Advanced corrodeD pipe structurAl integrity systeM (ADAM)")
 
@@ -214,7 +214,7 @@ Stresses = [Sigma_VM_Pipe_Max_Operating_Pressure, Sigma_VM_Pipe_Min_Operating_Pr
 index = ["Svm_Max (MPa)", "Svm_Min (MPa)", "σa (MPa)", "σm (MPa)", "Se (MPa)", "Yield Stress (MPa)", "UTS (MPa)"]
 df = pd.DataFrame({"Stresses (MPa)": Stresses}, index=index)
 
-#Graph Layout for Fatigue Failure Criteria
+# Graph Layout for Fatigue Failure Criteria
 if UTS > 1 and Sy > 1 and Se > 0 and sigma_m >= 0 and sigma_a >= 0:
     sigma_m_range = np.linspace(0, UTS, 500)
     df_plot = pd.DataFrame({
@@ -222,15 +222,15 @@ if UTS > 1 and Sy > 1 and Se > 0 and sigma_m >= 0 and sigma_a >= 0:
         'Goodman': Se * (1 - sigma_m_range / UTS),
         'Soderberg': Se * (1 - sigma_m_range / Sy),
         'Gerber': Se * (1 - (sigma_m_range / UTS) ** 2),
-        'Morrow': Se * (1 - sigma_m_range / UTS)
+        'Morrow': Se * (1 - sigma_m_range / UTS)  # same as Goodman in this simplified form
     })
 
     fig, ax = plt.subplots(figsize=(8, 6))
 
-    df_plot.plot(x='UTS', y='Se', ax=ax, label='Goodman', linestyle='--')
-    df_plot.plot(x='Sy', y='Se', ax=ax, label='Soderberg', linestyle='-')
-    df_plot.plot(x='UTS', y='Se', ax=ax, label='Gerber', linestyle='..')
-    df_plot.plot(x='UTS', y='Se', ax=ax, label='Morrow', linestyle='--.--')
+    ax.plot(df_plot['sigma_m'], df_plot['Goodman'], label='Goodman', linestyle='--')
+    ax.plot(df_plot['sigma_m'], df_plot['Soderberg'], label='Soderberg', linestyle='-')
+    ax.plot(df_plot['sigma_m'], df_plot['Gerber'], label='Gerber', linestyle='-.')
+    ax.plot(df_plot['sigma_m'], df_plot['Morrow'], label='Morrow', linestyle=':')
 
     ax.plot(sigma_m, sigma_a, 'ro', label='Operating Point')
     ax.annotate('Operating Point', (sigma_m, sigma_a), textcoords="offset points", xytext=(10,10), ha='center')
@@ -245,7 +245,6 @@ if UTS > 1 and Sy > 1 and Se > 0 and sigma_m >= 0 and sigma_a >= 0:
     st.pyplot(fig)
 else:
     st.warning("Fatigue plot not generated. Please enter valid material strengths and pressure values (e.g., UTS > 100 MPa, Sy > 50 MPa).")
-
 
 #st.pyplot(df.plot.barh(color={"Stresses (MPa)": "red"}, stacked=True).figure)
 
