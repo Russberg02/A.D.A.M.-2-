@@ -3,3 +3,4 @@ pandas==2.0.3
 Pillow==9.5.0
 streamlit==1.26.0
 matplotlib==3.8.1
+seaborn==0.13.2
