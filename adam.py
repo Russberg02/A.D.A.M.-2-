@@ -65,7 +65,7 @@ PTresca = 2*t*UTS/(D)
 M = m.sqrt(1+0.8*(L/(m.sqrt(D*t)))) #Folias factor
 
 if L < m.sqrt(20*D*t):
-    P_ASME_B31G = (2*t*UTS/D)*(1-(2/3)*(Dc/t)/1-(2/3)*(Dc/t)/M)
+    P_ASME_B31G = (2 * t * UTS / D) * ((1 - (2/3) * (Dc / t)) / (1 - ((2/3) * (Dc / t) / M)))
 
 elif L > m.sqrt(20*D*t):
     P_ASME_B31G = (2*t*UTS/D)*(1-(Dc/t))
@@ -221,16 +221,14 @@ if UTS > 1 and Sy > 1 and Se > 0 and sigma_m >= 0 and sigma_a >= 0:
         'sigma_m': sigma_m_range,
         'Goodman': Se * (1 - sigma_m_range / UTS),
         'Soderberg': Se * (1 - sigma_m_range / Sy),
-        'Gerber': Se * (1 - (sigma_m_range / UTS) ** 2),
-        'Morrow': Se * (1 - sigma_m_range / UTS)  # same as Goodman in this simplified form
+
     })
 
     fig, ax = plt.subplots(figsize=(8, 6))
 
     ax.plot(df_plot['sigma_m'], df_plot['Goodman'], label='Goodman', linestyle='--')
     ax.plot(df_plot['sigma_m'], df_plot['Soderberg'], label='Soderberg', linestyle='-')
-    ax.plot(df_plot['sigma_m'], df_plot['Gerber'], label='Gerber', linestyle='-.')
-    ax.plot(df_plot['sigma_m'], df_plot['Morrow'], label='Morrow', linestyle=':')
+
 
     ax.plot(sigma_m, sigma_a, 'ro', label='Operating Point')
     ax.annotate('Operating Point', (sigma_m, sigma_a), textcoords="offset points", xytext=(10,10), ha='center')
