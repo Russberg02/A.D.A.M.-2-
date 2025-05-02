@@ -8,7 +8,8 @@ from PIL import Image
 import os
 from glob import glob
 import matplotlib.pyplot as plt
-
+import sys
+print(f"Python executable path: {sys.executable}")
 st.header("Advanced corrodeD pipe structurAl integrity systeM (ADAM)")
 
 st.subheader('Dimensional Parameters')
