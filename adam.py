@@ -1,12 +1,8 @@
 import streamlit as st
 import pandas as pd
-from pickle import load
-import pickle
 import numpy as np
 import math as m
-from PIL import Image
-import os
-from glob import glob
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 # HEADER
@@ -62,7 +58,7 @@ else:
 
 # DnV
 Q = m.sqrt(1 + 0.31 * (Lc ** 2) / (D * t))
-P_DnV = ((2 * UTS * t / (D - t)) * ((1 - (Dc / t)) / (1 - (Dc / (t * Q)))))
+P_DnV = (2 * UTS * t / (D - t)) * ((1 - (Dc / t)) / (1 - (Dc / (t * Q))))
 
 # PCORRC
 P_PCORRC = (2 * t * UTS / D) * (1 - Dc / t)
@@ -114,50 +110,34 @@ Gerber_Safe = Gerber_Value <= 1
 Morrow_sigma_a_allow = Se * (1 - (sigma_m / UTS))
 Morrow_Safe = sigma_a <= Morrow_sigma_a_allow
 
-# Plot only if values are valid
+# Plot using Seaborn
 if UTS > 1 and Sy > 1 and Se > 0 and sigma_m >= 0 and sigma_a >= 0:
-
-    # Define range for sigma_m
     sigma_m_range = np.linspace(0, UTS, 500)
+    df_plot = pd.DataFrame({
+        'sigma_m': sigma_m_range,
+        'Goodman': Se * (1 - sigma_m_range / UTS),
+        'Soderberg': Se * (1 - sigma_m_range / Sy),
+        'Gerber': Se * (1 - (sigma_m_range / UTS) ** 2),
+        'Morrow': Se * (1 - sigma_m_range / UTS)
+    })
 
-    # Define criteria lines
-    goodman_line = Se * (1 - sigma_m_range / UTS)
-    soderberg_line = Se * (1 - sigma_m_range / Sy)
-    gerber_line = Se * (1 - (sigma_m_range / UTS) ** 2)
-    morrow_line = Se * (1 - sigma_m_range / UTS)
-
-    # Prepare figure
     fig, ax = plt.subplots(figsize=(8, 6))
+    sns.lineplot(data=df_plot, x='sigma_m', y='Goodman', label='Goodman', ax=ax)
+    sns.lineplot(data=df_plot, x='sigma_m', y='Soderberg', label='Soderberg', ax=ax)
+    sns.lineplot(data=df_plot, x='sigma_m', y='Gerber', label='Gerber', ax=ax)
+    sns.lineplot(data=df_plot, x='sigma_m', y='Morrow', label='Morrow', ax=ax, linestyle='--')
 
-    # Fill regions
-    ax.fill_between(sigma_m_range, 0, goodman_line, color='green', alpha=0.1, label='Safe (Goodman)')
-    ax.fill_between(sigma_m_range, goodman_line, Se, color='red', alpha=0.1, label='Unsafe (Goodman)')
-
-    # Plot criteria lines
-    ax.plot(sigma_m_range, goodman_line, label='Goodman', color='green')
-    ax.plot(sigma_m_range, soderberg_line, label='Soderberg', color='blue')
-    ax.plot(sigma_m_range, gerber_line, label='Gerber', color='orange')
-    ax.plot(sigma_m_range, morrow_line, label='Morrow', color='purple', linestyle='--')
-
-    # Mark operating point
     ax.plot(sigma_m, sigma_a, 'ro', label='Operating Point')
     ax.annotate('Operating Point', (sigma_m, sigma_a), textcoords="offset points", xytext=(10,10), ha='center')
 
-    # Labels and legend
     ax.set_title('Fatigue Failure Criteria')
     ax.set_xlabel('Mean Stress σm (MPa)')
     ax.set_ylabel('Alternating Stress σa (MPa)')
-    ax.legend()
     ax.grid(True)
-
-    # Set plot limits with minimum thresholds
+    ax.legend()
     ax.set_xlim([0, max(UTS, 1)])
     ax.set_ylim([0, max(Se * 1.2, 1)])
-
-    # Display in Streamlit
-    st.subheader("Fatigue Failure Criteria Graph")
     st.pyplot(fig)
-
 else:
     st.warning("Fatigue plot not generated. Please enter valid material strengths and pressure values (e.g., UTS > 100 MPa, Sy > 50 MPa).")
 
@@ -177,7 +157,6 @@ st.write(pd.DataFrame({
     'Safe (Morrow)': ["Yes" if Morrow_Safe else "No"]
 }))
 
-# Display VM stress
 st.subheader('Von Mises stress of Maximum Operating Pressure')
 st.write(pd.DataFrame({'Sigma_VM_Pipe_Max_Operating_Pressure (MPa)': [f"{Sigma_VM_Pipe_Max_Operating_Pressure:.2f}"]}))
 
@@ -189,7 +168,7 @@ st.subheader('Reference')
 st.write('Xian-Kui Zhu, A comparative study of burst failure models for assessing remaining strength of corroded pipelines, Journal of Pipeline Science and Engineering 1 (2021) 36 - 50, https://doi.org/10.1016/j.jpse.2021.01.008')
 
 # Assessment links
-st.subheader('Assesment')
+st.subheader('Assessment')
 st.markdown('[Case Study](https://drive.google.com/file/d/1Ako5uVRPYL5k5JeEQ_Xhl9f3pMRBjCJv/view?usp=sharing)', unsafe_allow_html=True)
 st.markdown('[Corroded Pipe Burst Data](https://docs.google.com/spreadsheets/d/1YJ7ziuc_IhU7-MMZOnRmh4h21_gf6h5Z/edit?gid=56754844#gid=56754844)', unsafe_allow_html=True)
 st.markdown('[Pre-Test](https://forms.gle/wPvcgnZAC57MkCxN8)', unsafe_allow_html=True)
