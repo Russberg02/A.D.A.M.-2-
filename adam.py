@@ -7,7 +7,9 @@ import math as m
 from PIL import Image
 import os
 from glob import glob
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+
+st.header("Advanced corrodeD pipe structurAl integrity systeM (ADAM)")
 
 st.subheader('Dimensional Parameters')
 htp="https://www.researchgate.net/profile/Changqing-Gong/publication/313456917/figure/fig1/AS:573308992266241@1513698923813/Schematic-illustration-of-the-geometry-of-a-typical-corrosion-defect.png"
@@ -211,42 +213,6 @@ st.write(calculated_param_df)
 Stresses = [Sigma_VM_Pipe_Max_Operating_Pressure, Sigma_VM_Pipe_Min_Operating_Pressure, sigma_a, sigma_m, Se, Sy, UTS]
 index = ["Svm_Max (MPa)", "Svm_Min (MPa)", "σa (MPa)", "σm (MPa)", "Se (MPa)", "Yield Stress (MPa)", "UTS (MPa)"]
 df = pd.DataFrame({"Stresses (MPa)": Stresses}, index=index)
-
-
-# Generate mean stress values for plotting
-sigma_m_range = np.linspace(0, UTS, 500)
-
-# Goodman Line: σa = Se * (1 - σm / UTS)
-goodman_line = Se * (1 - sigma_m_range / UTS)
-
-# Soderberg Line: σa = Se * (1 - σm / Sy)
-soderberg_line = Se * (1 - sigma_m_range / Sy)
-
-# Gerber Line: σa = Se * (1 - (σm / UTS)^2)
-gerber_line = Se * (1 - (sigma_m_range / UTS)**2)
-
-# Morrow Line: same as Goodman for current assumptions
-morrow_line = Se * (1 - sigma_m_range / UTS)
-
-# Plotting
-fig, ax = plt.subplots(figsize=(10, 6))
-ax.plot(sigma_m_range, goodman_line, label='Goodman', color='red')
-ax.plot(sigma_m_range, soderberg_line, label='Soderberg', color='blue')
-ax.plot(sigma_m_range, gerber_line, label='Gerber', color='green')
-ax.plot(sigma_m_range, morrow_line, label='Morrow', color='orange', linestyle='--')
-
-# Plot operating point
-ax.plot(sigma_m, sigma_a, 'ko', label='Operating Point')
-
-# Styling
-ax.set_title('Fatigue Failure Criteria Curves')
-ax.set_xlabel('Mean Stress σm (MPa)')
-ax.set_ylabel('Alternating Stress σa (MPa)')
-ax.legend()
-ax.grid(True)
-
-st.subheader("Fatigue Failure Criteria Graph")
-st.pyplot(fig)
 
 #st.pyplot(df.plot.barh(color={"Stresses (MPa)": "red"}, stacked=True).figure)
 
